@@ -9,7 +9,12 @@ Hiren's Boot CD is built on Windows 11 PE x64, and it is designed to troubleshoo
 
 ## What can you do?
 * MBR Tools
-* Data Recovery | Defrag | Diagnostic | Imaging | Partition Tools | Security
+* Data Recovery
+* Defrag
+* Diagnostic
+* Imaging
+* Partition Tools
+* Security
 * Removable Drive Tools
 * Anti Virus
 * Key Finders
