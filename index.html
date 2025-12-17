@@ -57,6 +57,16 @@
     }
     [data-theme="dark"] header{ background:rgba(11,11,15,.72); }
 
+    .hint{
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .hint.hidden{
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+    }
+    
     .topbar{
       max-width:var(--max);
       margin:0 auto;
@@ -338,7 +348,7 @@
               <span class="chip"><b>Repo:</b> Tool-Bytes</span>
             </div>
           </div>
-          <p style="color:var(--muted);margin:10px 0 0">
+          <p id="introHint" class="hint" style="color:var(--muted);margin:10px 0 0">
             Select an article on the left.
           </p>
         </section>
@@ -362,7 +372,7 @@
         </div>
         <div class="bd">
           <ul class="toc" id="toc"></ul>
-          <div style="margin-top:10px;color:var(--muted);font-size:12px;">
+          <div id="tocHint" class="hint" style="margin-top:10px;color:var(--muted);font-size:12px;">
             Links are created from headings.
           </div>
         </div>
@@ -502,6 +512,9 @@
   // Load & render
   // -------------
   async function loadArticle(item, scrollToId=null){
+    
+    $("#introHint")?.classList.add("hidden");
+    $("#tocHint")?.classList.add("hidden");
     // highlight selection
     $$("#articleList a").forEach(a => a.classList.toggle("active", a.textContent.includes(prettyName(item.name))));
     
