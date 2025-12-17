@@ -504,7 +504,7 @@
   async function loadArticle(item, scrollToId=null){
     // highlight selection
     $$("#articleList a").forEach(a => a.classList.toggle("active", a.textContent.includes(prettyName(item.name))));
-    pageTitle.textContent = prettyName(item.name);
+    
 
     reader.innerHTML = `<p style="color:var(--muted)">Loading <code>${escapeHtml(item.name)}</code>…</p>`;
     toc.innerHTML = "";
@@ -545,6 +545,7 @@
   // (intentionally minimal; safe + readable)
   // -----------------
   function markdownToHtml(md){
+    
     const lines = md.replace(/\r\n/g, "\n").split("\n");
 
     let out = [];
@@ -552,6 +553,7 @@
     let codeLang = "";
     let listMode = null; // "ul" | "ol"
     let listBuf = [];
+    let titleConsumed = false;
 
     const flushList = () => {
       if (!listMode || listBuf.length === 0) return;
@@ -595,6 +597,13 @@
         flushList();
         const level = h[1].length;
         const text = h[2].trim();
+
+        if (level === 1 && !titleConsumed){
+          pageTitle.textContent = text;
+          titleConsumed = true;
+          continue;
+        }
+        
         const id = slugify(text);
         out.push(`<h${level} id="${id}">${inlineMd(text)}</h${level}>`);
         continue;
