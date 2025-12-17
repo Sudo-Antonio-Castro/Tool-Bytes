@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tool-Bytes</title>
+  <meta name="description" content="Tool-Bytes — curated tools and notes." />
+  <style>
+    :root{
+      --bg:#ffffff;
+      --panel:#ffffff;
+      --text:#0b0b0f;
+      --muted:#5b5b66;
+      --border:#e6e6ee;
+      --chip:#f2f2f7;
+      --shadow:0 10px 40px rgba(0,0,0,.10);
+      --code-bg:#0b0b0f;
+      --code-text:#f6f6fb;
+      --radius:14px;
+      --radius-sm:10px;
+      --max:1200px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --focus:0 0 0 3px rgba(0,0,0,.16);
+    }
+    [data-theme="dark"]{
+      --bg:#0b0b0f;
+      --panel:#101014;
+      --text:#f6f6fb;
+      --muted:#b5b5c2;
+      --border:#262633;
+      --chip:#17171e;
+      --shadow:0 10px 40px rgba(0,0,0,.45);
+      --code-bg:#050507;
+      --code-text:#f6f6fb;
+      --focus:0 0 0 3px rgba(255,255,255,.18);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:inherit;text-decoration:none}
+    a:hover{text-decoration:underline}
+    :focus-visible{outline:none;box-shadow:var(--focus);border-radius:8px}
+
+    header{
+      position:sticky; top:0; z-index:50;
+      background:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    [data-theme="dark"] header{ background:rgba(11,11,15,.72); }
+
+    .topbar{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .brand{display:flex;align-items:center;gap:10px;min-width:220px}
+    .logo{
+      width:34px;height:34px;border-radius:10px;
+      background:var(--text);
+      display:grid;place-items:center;
+      box-shadow:var(--shadow);
+    }
+    .logo svg{width:18px;height:18px;fill:var(--bg)}
+    .brand h1{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      opacity:.9;
+    }
+    .brand .sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+    .controls{display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end}
+    .search{position:relative;flex:1;max-width:520px;min-width:220px}
+    .search input{
+      width:100%;
+      padding:11px 40px 11px 40px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:var(--panel);
+      color:var(--text);
+    }
+    .search svg{
+      position:absolute; left:14px; top:50%;
+      transform:translateY(-50%);
+      width:16px;height:16px;fill:var(--text);opacity:.65;
+    }
+    .kbd{
+      position:absolute; right:10px; top:50%;
+      transform:translateY(-50%);
+      font-family:var(--mono);
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--chip);
+      color:var(--muted);
+    }
+    .btn{
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .btn:hover{border-color:rgba(0,0,0,.35)}
+    [data-theme="dark"] .btn:hover{border-color:rgba(255,255,255,.35)}
+    .btn svg{width:16px;height:16px;fill:var(--text);opacity:.85}
+
+    .wrap{max-width:var(--max);margin:0 auto;padding:18px}
+    .grid{
+      display:grid;
+      grid-template-columns: 280px minmax(0,1fr) 280px;
+      gap:18px;
+      align-items:start;
+      margin-top:18px;
+    }
+    @media (max-width:1100px){
+      .grid{grid-template-columns: 280px minmax(0,1fr)}
+      .rightcol{display:none}
+    }
+    @media (max-width:980px){
+      .grid{grid-template-columns: 1fr}
+      .leftcol{position:relative;top:auto}
+      .search{max-width:none}
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel .hd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .panel .hd strong{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .panel .bd{padding:12px 14px 14px}
+
+    .leftcol{position:sticky;top:86px}
+    .rightcol{position:sticky;top:86px}
+
+    .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+    .list a{
+      display:block;
+      padding:10px 10px;
+      border-radius:10px;
+      opacity:.92;
+    }
+    .list a:hover{background:var(--chip);text-decoration:none}
+    .list a.active{
+      background:var(--chip);
+      outline:1px solid rgba(0,0,0,.20);
+    }
+    [data-theme="dark"] .list a.active{outline:1px solid rgba(255,255,255,.18)}
+    .list small{display:block;color:var(--muted);margin-top:2px;font-size:12px}
+
+    .hero{padding:22px}
+    .titlebar{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
+    h2{margin:0;font-size:26px;letter-spacing:-0.02em}
+    .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--chip);
+      color:var(--muted);
+      font-size:12px;
+    }
+    .chip b{color:var(--text);font-weight:600}
+
+    .content{padding:0 22px 22px}
+    .divider{height:1px;background:var(--border);margin:18px 0}
+
+    /* Rendered markdown styles */
+    .md h1,.md h2,.md h3,.md h4{letter-spacing:-0.01em}
+    .md h1{font-size:28px;margin:0 0 10px}
+    .md h2{font-size:20px;margin:26px 0 10px}
+    .md h3{font-size:16px;margin:18px 0 8px}
+    .md p{margin:10px 0;color:rgba(0,0,0,.80)}
+    [data-theme="dark"] .md p{color:rgba(255,255,255,.82)}
+    .md ul,.md ol{margin:10px 0 10px 18px}
+    .md li{margin:4px 0}
+    .md blockquote{
+      margin:12px 0;
+      padding:10px 12px;
+      border-left:4px solid var(--border);
+      background:var(--chip);
+      border-radius:var(--radius-sm);
+    }
+    .md hr{border:none;border-top:1px solid var(--border);margin:18px 0}
+    .md img{max-width:100%;border-radius:var(--radius);border:1px solid var(--border)}
+    .md a{ text-decoration: underline; }
+
+    pre{
+      background:var(--code-bg);
+      color:var(--code-text);
+      border-radius:var(--radius);
+      padding:14px 14px 12px;
+      overflow:auto;
+      position:relative;
+      border:1px solid rgba(255,255,255,.08);
+      font-family:var(--mono);
+      font-size:13px;
+      line-height:1.5;
+      margin:12px 0;
+    }
+    code{font-family:var(--mono)}
+    .copy-btn{
+      position:absolute;
+      top:10px; right:10px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:var(--code-text);
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      opacity:.92;
+      user-select:none;
+    }
+    .copy-btn:hover{opacity:1}
+    .copy-btn svg{width:14px;height:14px;fill:var(--code-text);opacity:.9}
+
+    .toc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+    .toc a{
+      display:block;
+      padding:9px 10px;
+      border-radius:10px;
+      opacity:.9;
+    }
+    .toc a:hover{background:var(--chip);text-decoration:none}
+    .toc a.active{background:var(--chip);outline:1px solid rgba(0,0,0,.20)}
+    [data-theme="dark"] .toc a.active{outline:1px solid rgba(255,255,255,.18)}
+
+    footer{margin:18px 0 6px;color:var(--muted);font-size:12px;text-align:center}
+
+    @media print{
+      header,.leftcol,.rightcol,.copy-btn,.kbd{display:none !important}
+      .wrap{max-width:none;padding:0}
+      .panel{box-shadow:none}
+      body{background:#fff;color:#000}
+      a{color:#000}
+      pre{border:1px solid #000}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.8 9.7-9 10-5.2-.3-9-5-9-10V6l9-4zm0 4.2L6 8.7v3.4c0 3.7 2.7 7.1 6 7.6 3.3-.5 6-3.9 6-7.6V8.7l-6-2.5z"/></svg>
+      </div>
+      <div>
+        <h1>Tool-Bytes</h1>
+        <div class="sub">Single-file site (HTML/CSS/JS)</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="search" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2a8 8 0 105.3 14l4.7 4.7 1.4-1.4-4.7-4.7A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>
+        <input id="filter" type="search" placeholder="Filter articles…" autocomplete="off" />
+        <span class="kbd" aria-hidden="true">Ctrl K</span>
+      </div>
+
+      <button class="btn" id="themeBtn" type="button" aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18a6 6 0 110-12 6 6 0 010 12zm0 4l-1-2h2l-1 2zM12 2l1 2h-2l1-2zM2 12l2-1v2l-2-1zm20 0l-2 1v-2l2 1z"/></svg>
+        <span id="themeLabel">Dark</span>
+      </button>
+
+      <button class="btn" id="printBtn" type="button" aria-label="Print">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V2h12v7H6zm10-5H8v3h8V4zM6 22v-5h12v5H6zm2-3v1h8v-1H8zm-4-9h20v8h-4v-3H4v3H0v-8h4z"/></svg>
+        Print
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <!-- Left: Articles list -->
+    <aside class="leftcol" aria-label="Articles">
+      <div class="panel">
+        <div class="hd">
+          <strong>Articles</strong>
+          <span class="chip"><b id="count">0</b> items</span>
+        </div>
+        <div class="bd">
+          <ul class="list" id="articleList"></ul>
+          <div style="margin-top:10px;color:var(--muted);font-size:12px;">
+            Tip: <b>Ctrl</b> + <b>K</b> focuses search.
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center: Reader -->
+    <main aria-label="Reader">
+      <article class="panel">
+        <section class="hero">
+          <div class="titlebar">
+            <h2 id="pageTitle">Welcome</h2>
+            <div class="meta">
+              <span class="chip"><b>Repo:</b> Tool-Bytes</span>
+              <span class="chip"><b>Mode:</b> Markdown viewer</span>
+            </div>
+          </div>
+          <p style="color:var(--muted);margin:10px 0 0">
+            Select an article on the left. The page will load and render the <code>.md</code> file.
+          </p>
+        </section>
+        <div class="content">
+          <div class="divider"></div>
+          <div id="reader" class="md">
+            <p style="color:var(--muted)">
+              If nothing appears, ensure GitHub Pages is enabled and your repo is public (or you have Pages enabled for private repos).
+            </p>
+          </div>
+        </div>
+      </article>
+      <footer>© <span id="year"></span> Tool-Bytes</footer>
+    </main>
+
+    <!-- Right: Table of contents -->
+    <aside class="rightcol" aria-label="On this page">
+      <div class="panel">
+        <div class="hd">
+          <strong>On this page</strong>
+        </div>
+        <div class="bd">
+          <ul class="toc" id="toc"></ul>
+          <div style="margin-top:10px;color:var(--muted);font-size:12px;">
+            Links are created from headings.
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  // ===========================
+  // Tool-Bytes Single-File Site
+  // ===========================
+
+  const REPO_OWNER = "Sudo-Antonio-Castro";
+  const REPO_NAME  = "Tool-Bytes";
+  const BRANCH     = "main";
+  const API_ROOT   = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/`;
+
+  const $  = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+  const articleList = $("#articleList");
+  const filterInput = $("#filter");
+  const reader      = $("#reader");
+  const toc         = $("#toc");
+  const pageTitle   = $("#pageTitle");
+
+  // Theme toggle (persist)
+  const savedTheme = localStorage.getItem("toolbytes_theme");
+  if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+  updateThemeLabel();
+  $("#themeBtn").addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme") || "light";
+    const next = cur === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("toolbytes_theme", next);
+    updateThemeLabel();
+  });
+  function updateThemeLabel(){
+    const cur = document.documentElement.getAttribute("data-theme") || "light";
+    $("#themeLabel").textContent = cur === "dark" ? "Light" : "Dark";
+  }
+
+  // Print
+  $("#printBtn").addEventListener("click", () => window.print());
+
+  // Ctrl+K focus search
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      filterInput.focus();
+    }
+  });
+
+  // Footer year
+  $("#year").textContent = new Date().getFullYear();
+
+  // ---------
+  // Load list
+  // ---------
+  let allItems = [];
+  init();
+
+  async function init(){
+    const items = await fetchRepoMarkdownList();
+    allItems = items;
+    renderList(items);
+    $("#count").textContent = items.length;
+
+    // handle deep link
+    const fromHash = parseHash();
+    if (fromHash?.file) {
+      const match = items.find(x => x.name === fromHash.file || x.name === ensureMd(fromHash.file));
+      if (match) await loadArticle(match, fromHash.section);
+    } else if (items[0]) {
+      // Optional: auto-open first article
+      // await loadArticle(items[0]);
+    }
+  }
+
+  async function fetchRepoMarkdownList(){
+    // Best: GitHub API (auto-updates when you add new .md files)
+    try{
+      const res = await fetch(API_ROOT, { headers: { "Accept": "application/vnd.github+json" }});
+      if (!res.ok) throw new Error("GitHub API failed");
+      const json = await res.json();
+      return json
+        .filter(x => x.type === "file" && x.name.toLowerCase().endsWith(".md"))
+        .filter(x => x.name.toLowerCase() !== "readme.md")
+        .sort((a,b) => a.name.localeCompare(b.name, undefined, {numeric:true, sensitivity:"base"}));
+    }catch(e){
+      // Fallback: hard-coded list (update if you add more)
+      return [
+        { name:"Google Dorking.md",      download_url: rawUrl("Google Dorking.md") },
+        { name:"Hirens Boot CD.md",      download_url: rawUrl("Hirens Boot CD.md") },
+        { name:"OSINT Framework.md",     download_url: rawUrl("OSINT Framework.md") },
+        { name:"Tails OS.md",            download_url: rawUrl("Tails OS.md") },
+      ];
+    }
+  }
+
+  function rawUrl(fileName){
+    return `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${encodeURIComponent(fileName).replace(/%2F/g,"/")}`;
+  }
+
+  // -------------
+  // Render sidebar
+  // -------------
+  function renderList(items){
+    articleList.innerHTML = "";
+    items.forEach(item => {
+      const li = document.createElement("li");
+      const a  = document.createElement("a");
+      a.href = makeHash({ file:item.name });
+      a.innerHTML = `${escapeHtml(prettyName(item.name))}
+        <small>${escapeHtml(item.name)}</small>`;
+      a.addEventListener("click", async (e) => {
+        e.preventDefault();
+        await loadArticle(item);
+      });
+      li.appendChild(a);
+      articleList.appendChild(li);
+    });
+
+    // filter
+    filterInput.addEventListener("input", () => {
+      const q = filterInput.value.trim().toLowerCase();
+      $$("#articleList a").forEach(a => {
+        const text = a.textContent.toLowerCase();
+        a.parentElement.style.display = text.includes(q) ? "" : "none";
+      });
+    });
+  }
+
+  function prettyName(file){
+    return file.replace(/\.md$/i, "");
+  }
+
+  // -------------
+  // Load & render
+  // -------------
+  async function loadArticle(item, scrollToId=null){
+    // highlight selection
+    $$("#articleList a").forEach(a => a.classList.toggle("active", a.textContent.includes(prettyName(item.name))));
+    pageTitle.textContent = prettyName(item.name);
+
+    reader.innerHTML = `<p style="color:var(--muted)">Loading <code>${escapeHtml(item.name)}</code>…</p>`;
+    toc.innerHTML = "";
+
+    try{
+      const url = item.download_url || rawUrl(item.name);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Failed to fetch markdown");
+      const md = await res.text();
+
+      const html = markdownToHtml(md);
+      reader.innerHTML = html;
+
+      enhanceCodeBlocks(reader);
+      buildTocFromRendered(reader);
+
+      // update hash (shareable)
+      location.hash = makeHash({ file:item.name, section: scrollToId || null });
+
+      // scroll to requested section
+      if (scrollToId) {
+        const el = document.getElementById(scrollToId);
+        if (el) el.scrollIntoView({behavior:"smooth", block:"start"});
+      } else {
+        reader.scrollIntoView({behavior:"smooth", block:"start"});
+      }
+    }catch(err){
+      reader.innerHTML = `
+        <p style="color:var(--muted)">
+          Could not load <code>${escapeHtml(item.name)}</code>.
+          If this is a Pages site, confirm GitHub Pages is enabled and publishing from <b>main / (root)</b>.
+        </p>`;
+    }
+  }
+
+  // -----------------
+  // Simple Markdown -> HTML
+  // (intentionally minimal; safe + readable)
+  // -----------------
+  function markdownToHtml(md){
+    const lines = md.replace(/\r\n/g, "\n").split("\n");
+
+    let out = [];
+    let inCode = false;
+    let codeLang = "";
+    let listMode = null; // "ul" | "ol"
+    let listBuf = [];
+
+    const flushList = () => {
+      if (!listMode || listBuf.length === 0) return;
+      out.push(`<${listMode}>` + listBuf.join("") + `</${listMode}>`);
+      listMode = null; listBuf = [];
+    };
+
+    for (let i=0;i<lines.length;i++){
+      const raw = lines[i];
+      const line = raw.trimEnd();
+
+      // fenced code
+      const fence = line.match(/^```(\w+)?\s*$/);
+      if (fence){
+        flushList();
+        if (!inCode){
+          inCode = true;
+          codeLang = fence[1] || "";
+          out.push(`<pre data-lang="${escapeHtml(codeLang)}"><code>`);
+        }else{
+          inCode = false;
+          out.push(`</code></pre>`);
+        }
+        continue;
+      }
+      if (inCode){
+        out.push(escapeHtml(raw) + "\n");
+        continue;
+      }
+
+      // hr
+      if (/^(-{3,}|\*{3,})$/.test(line)){
+        flushList();
+        out.push(`<hr />`);
+        continue;
+      }
+
+      // headings
+      const h = line.match(/^(#{1,4})\s+(.*)$/);
+      if (h){
+        flushList();
+        const level = h[1].length;
+        const text = h[2].trim();
+        const id = slugify(text);
+        out.push(`<h${level} id="${id}">${inlineMd(text)}</h${level}>`);
+        continue;
+      }
+
+      // blockquote
+      if (/^>\s+/.test(line)){
+        flushList();
+        const q = line.replace(/^>\s+/, "");
+        out.push(`<blockquote>${inlineMd(q)}</blockquote>`);
+        continue;
+      }
+
+      // lists
+      const ul = line.match(/^[-*]\s+(.*)$/);
+      const ol = line.match(/^\d+\.\s+(.*)$/);
+      if (ul){
+        if (listMode && listMode !== "ul") flushList();
+        listMode = "ul";
+        listBuf.push(`<li>${inlineMd(ul[1])}</li>`);
+        continue;
+      }
+      if (ol){
+        if (listMode && listMode !== "ol") flushList();
+        listMode = "ol";
+        listBuf.push(`<li>${inlineMd(ol[1])}</li>`);
+        continue;
+      }
+
+      // blank line
+      if (line === ""){
+        flushList();
+        continue;
+      }
+
+      // paragraph
+      flushList();
+      out.push(`<p>${inlineMd(line)}</p>`);
+    }
+
+    flushList();
+    return out.join("\n");
+  }
+
+  function inlineMd(text){
+    // escape first, then re-inject allowed formatting
+    let s = escapeHtml(text);
+
+    // images ![alt](url)
+    s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (m, alt, url) => {
+      const safe = safeUrl(url);
+      return safe ? `<img alt="${escapeHtml(alt)}" src="${safe}">` : m;
+    });
+
+    // links [text](url)
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, label, url) => {
+      const safe = safeUrl(url);
+      return safe ? `<a href="${safe}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>` : m;
+    });
+
+    // inline code `code`
+    s = s.replace(/`([^`]+)`/g, (m, c) => `<code>${escapeHtml(c)}</code>`);
+
+    // bold **text**
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+
+    // italics *text* (simple)
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+
+    return s;
+  }
+
+  function safeUrl(url){
+    const u = (url || "").trim();
+    if (!u) return null;
+    // allow relative, http, https
+    if (u.startsWith("http://") || u.startsWith("https://") || u.startsWith("./") || u.startsWith("../") || u.startsWith("/")) {
+      // prevent javascript: etc
+      if (/^\s*javascript:/i.test(u)) return null;
+      return u;
+    }
+    return null;
+  }
+
+  function slugify(s){
+    return (s || "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  // -----------------
+  // TOC + code copy
+  // -----------------
+  function buildTocFromRendered(root){
+    toc.innerHTML = "";
+
+    const headings = $$("h2[id], h3[id]", root);
+    if (headings.length === 0){
+      toc.innerHTML = `<li><span style="color:var(--muted);font-size:12px;">No headings found.</span></li>`;
+      return;
+    }
+
+    headings.forEach(h => {
+      const li = document.createElement("li");
+      const a  = document.createElement("a");
+      a.href = makeHash({ file: currentFileFromHash() || "", section: h.id });
+      a.textContent = h.textContent;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById(h.id)?.scrollIntoView({behavior:"smooth", block:"start"});
+        // keep URL updated
+        location.hash = makeHash({ file: currentFileFromHash() || "", section: h.id });
+      });
+      li.appendChild(a);
+      toc.appendChild(li);
+    });
+
+    // active section highlight
+    const links = $$("#toc a");
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          const id = entry.target.getAttribute("id");
+          links.forEach(a => a.classList.toggle("active", a.getAttribute("href").includes(`section=${encodeURIComponent(id)}`)));
+        }
+      });
+    }, { rootMargin: "-25% 0px -70% 0px", threshold: 0.1 });
+
+    headings.forEach(h => obs.observe(h));
+  }
+
+  function enhanceCodeBlocks(root){
+    $$("pre", root).forEach(pre => {
+      if (pre.querySelector(".copy-btn")) return;
+
+      const btn = document.createElement("button");
+      btn.className = "copy-btn";
+      btn.type = "button";
+      btn.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H6a2 2 0 00-2 2v12h2V3h10V1zm3 4H10a2 2 0 00-2 2v14a2 2 0 002 2h9a2 2 0 002-2V7a2 2 0 00-2-2zm0 16H10V7h9v14z"/></svg><span>Copy</span>`;
+      btn.addEventListener("click", async () => {
+        const code = pre.querySelector("code");
+        if (!code) return;
+        try{
+          await navigator.clipboard.writeText(code.textContent);
+          setCopyState(btn, "Copied");
+        }catch(e){
+          setCopyState(btn, "Copy failed");
+        }
+      });
+      pre.prepend(btn);
+    });
+  }
+
+  function setCopyState(btn, text){
+    const span = btn.querySelector("span");
+    const old = span.textContent;
+    span.textContent = text;
+    btn.style.transform = "scale(0.98)";
+    setTimeout(() => { span.textContent = old; btn.style.transform = "none"; }, 1000);
+  }
+
+  // -----------------
+  // Hash helpers
+  // -----------------
+  function makeHash({file, section=null}){
+    const p = new URLSearchParams();
+    if (file) p.set("file", file);
+    if (section) p.set("section", section);
+    return "#" + p.toString();
+  }
+
+  function parseHash(){
+    const h = (location.hash || "").replace(/^#/, "");
+    if (!h) return null;
+
+    // support #file=...&section=...
+    if (h.includes("=")){
+      const p = new URLSearchParams(h);
+      const file = p.get("file");
+      const section = p.get("section");
+      return file ? { file, section } : null;
+    }
+
+    // support #OSINT%20Framework (optional)
+    return { file: ensureMd(decodeURIComponent(h)), section: null };
+  }
+
+  function currentFileFromHash(){
+    const parsed = parseHash();
+    return parsed?.file || null;
+  }
+
+  function ensureMd(name){
+    return /\.md$/i.test(name) ? name : (name + ".md");
+  }
+
+  // If user manually changes hash
+  window.addEventListener("hashchange", async () => {
+    const parsed = parseHash();
+    if (!parsed?.file) return;
+
+    const match = allItems.find(x => x.name === parsed.file || x.name === ensureMd(parsed.file));
+    if (match) await loadArticle(match, parsed.section || null);
+  });
+</script>
+</body>
+</html>
