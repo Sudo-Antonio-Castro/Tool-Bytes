@@ -7,7 +7,7 @@ https://tinyurl.com/Klein27n1
 ```
 ## What is it?
 The Klein Tools 27 in 1 is a multi bit screwdriver with storage inside the handle.  
-You get 26 bitw + the 3.5mm nut driver
+You get 26 bits + the 3.5mm nut driver
 
 ### Information
 **Philips**: #000, #00, #0, #1, #2  
@@ -17,4 +17,4 @@ You get 26 bitw + the 3.5mm nut driver
 **Integrated 3.5 mm nut driver**
 
 #### Notes
-I've used this tool for precision work on laptops and desktops and other small electronics.
+I've used this tool for precision work on laptops, desktops and other small electronics.
